@@ -6,6 +6,7 @@ const server = require('http').createServer(app);
 const SocketClient = require('socket.io')(server);
 server.listen(4000);
 
+const Joi = require('@hapi/joi');
 const assert = require('assert');
 
 // Connection URL
@@ -21,7 +22,6 @@ MongoClient.connect(url, (err, client) => {
         throw err;
     }
     console.log('MongoDB Connected successfully to server');
-    // @Todo: use express
     // 2. connect to Socket.io
     SocketClient.on('connection', (socket) => {
         // set db name
@@ -44,14 +44,32 @@ MongoClient.connect(url, (err, client) => {
             socket.emit('status', s);
         }
 
+        function validateData(data) {
+            const schema = Joi.object({
+                name: Joi.string().required(),
+                message: Joi.string().required()
+            });
+            return schema.validate(data);
+        }
+
         // handle input events from client
         socket.on('input', (data) => {
-            // @todo:  use joi to define schema for data and validation
+            // use joi to define schema for data and validation
+            // validateData(data) returns the following, we use { error } to take the error part
+            // {
+            //     value: { name: 'Hung', message: '' },
+            //     error: [Error [ValidationError]: "message" is not allowed to be empty] {
+            //         _original: { name: 'Hung', message: '' },
+            //         details: [ [Object] ]
+            //     }
+            // }
+            const { error } = validateData(data);
             const name = data.name;
             const message = data.message;
 
             // check for name and message
-            if (name == '' || message == '') {
+            if (error) {
+                //console.log(error);
                 // Send error status
                 sendStatus('Please enter a name and a message');
             } else {
