@@ -1,5 +1,11 @@
 const MongoClient = require('mongodb').MongoClient;
-const SocketClient = require('socket.io').listen(4000).sockets;
+// socket.io in conjunction with Express
+// https://github.com/socketio/socket.io#in-conjunction-with-express
+const app = require('express')();
+const server = require('http').createServer(app);
+const SocketClient = require('socket.io')(server);
+server.listen(4000);
+
 const assert = require('assert');
 
 // Connection URL
@@ -37,7 +43,7 @@ MongoClient.connect(url, (err, client) => {
         sendStatus = (s) => {
             socket.emit('status', s);
         }
-        
+
         // handle input events from client
         socket.on('input', (data) => {
             // @todo:  use joi to define schema for data and validation

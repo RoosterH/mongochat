@@ -9,7 +9,18 @@
   "author": "Hung-Jen Hung",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "mongodb": "^3.5.6",
     "socket.io": "^2.3.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoosterH/mongochat.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/RoosterH/mongochat/issues"
+  },
+  "homepage": "https://github.com/RoosterH/mongochat#readme"
 }
